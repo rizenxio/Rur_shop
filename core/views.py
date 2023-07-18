@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
-
+from django.contrib.auth.decorators import login_required
 from item.models import Item, Category
+from django.contrib import auth
 
 from .forms import SignupForm
 
@@ -28,3 +29,17 @@ def signup(request):
 
 def login(request):
     return render(request, 'core/login.html')
+
+# @login_required
+# def logout(request):
+#     for sesskey in request.session.keys():
+#         del request.session[sesskey] 
+#     auth.logout(request)
+#     return render(request, 'core/index.html')
+@login_required
+def logout(request):
+    session_keys = list(request.session.keys())
+    for sesskey in session_keys:
+        del request.session[sesskey]
+    auth.logout(request)
+    return redirect(request, '/login/')
